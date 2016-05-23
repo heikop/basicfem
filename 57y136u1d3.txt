@@ -1,0 +1,31 @@
+Just some style rules I want to remember :)
+
+FILENAMES
+- Do not use crappy/ misleading/ meaningless file and directory names. (Except this one ;) )
+- C++ files have always the extension .cpp or .hpp.
+- Filenames normally contain only lower-case latin characters and understrikes (_) and have always one and only one full stop (.) as a file extension delimiter.
+- They always start with a lower-case latin character.
+
+CLASSNAMES
+- Classes only contain latin characters.
+- They always start with an upper-case character.
+- Further upper-case characters are only used for readability and not to indicate an abbreviation (example: 'CsrMatrix' and not 'CSRMatrix')
+
+FUNCTION NAMES
+- Lower-case latin characters and understrikes(_), sometimes numbers (example: is_quadratic, l2norm).
+
+VARNAMES
+- Lower-case latin characters and understrikes(_), sometimes numbers (example: u_old, l2norm).
+- The longer they live the longer the name if it is not already clear what it stores.
+
+CODESTYLE
+- Indentate with spaces not tabs. Use 4 of them.
+- Namespaces are named after their 'library part' they are in (see dir structure in src/) and are prefixed with 'hp'. Maybe their will come a time this format changes...
+- Curly brackets which surround a code block always are written in seperate lines.
+- The Code between them(curly brackets which surround a code block) is always indented. The only exception is code between namespace brackets which is not to indent. This exception is mandatory.
+- If a curly bracket is the end of a long code block it is desirable to comment the line of code before the related opening bracket or some words which summarize this line. (example: '}//loop over rows of matrix'). This is mandatory at the end of namespaces and conditional inclusions of preprocessor directives (example: '#ifndef blabla ... #endif//ifndef blabla')
+
+WHEN TO PUSH
+- Push only compiling code.
+- Premature code is OK (mine will always be...) as long as it is commented with 'TODO'(or something else, see below) and some explanations.
+- Comment with 'TODO', 'TODISCUSS', 'TOCHECK', 'ISSUE #157' to make it easy to find those lines of code.

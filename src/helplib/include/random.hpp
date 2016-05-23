@@ -20,8 +20,6 @@ std::vector<size_t>& randompositions(size_t numdata, size_t maxpos);
 
 std::vector<double>& randomvalues(size_t numdata, int maxnumdigits, int exponent);
 
-
 }//namespace hphelp
 
-
-#endif//__RANDOM_HPP_
+#endif//ifndef __RANDOM_HPP_

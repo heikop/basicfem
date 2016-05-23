@@ -76,4 +76,4 @@ public:
 
 }//namespace hptypes
 
-#endif//__MATRIX_HPP_
+#endif//ifndef __MATRIX_HPP_

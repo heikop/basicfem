@@ -70,4 +70,4 @@ private:
 
 }//namespace hptypes
 
-#endif//__COOMATRIX_HPP_
+#endif//ifndef __COOMATRIX_HPP_

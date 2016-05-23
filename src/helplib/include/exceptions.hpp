@@ -28,4 +28,4 @@ public:
 
 }//namespace hphelp
 
-#endif//__EXCEPTIONS_HPP_
+#endif//ifndef __EXCEPTIONS_HPP_

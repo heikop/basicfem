@@ -63,4 +63,4 @@ private:
 
 }//namespace hptypes
 
-#endif//__CSCMATRIX_HPP_
+#endif//ifndef __CSCMATRIX_HPP_

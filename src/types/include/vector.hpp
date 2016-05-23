@@ -74,4 +74,4 @@ private:
 
 }//namespace hptypes
 
-#endif//__VECTOR_HPP_
+#endif//ifndef __VECTOR_HPP_

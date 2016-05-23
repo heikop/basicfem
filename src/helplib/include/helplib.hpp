@@ -4,4 +4,4 @@
 #include "exceptions.hpp"
 #include "random.hpp"
 
-#endif//__HELPLIB_HPP_
+#endif//ifndef __HELPLIB_HPP_

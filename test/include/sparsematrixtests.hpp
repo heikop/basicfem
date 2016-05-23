@@ -97,4 +97,4 @@ void sparsetest_basics(mattype* mata, mattype* matb, mattype* matc, size_t num_t
     }
 }
 
-#endif//__SPARSEMATRIXTESTS_HPP_
+#endif//ifndef __SPARSEMATRIXTESTS_HPP_

@@ -63,4 +63,4 @@ private:
 
 }//namespace hptypes
 
-#endif//__LILMATRIX_HPP_
+#endif//ifndef __LILMATRIX_HPP_

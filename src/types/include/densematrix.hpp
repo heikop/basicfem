@@ -64,4 +64,4 @@ private:
 
 }//namespace hptypes
 
-#endif//__DENSEMATRIX_HPP_
+#endif//ifndef __DENSEMATRIX_HPP_

@@ -4,7 +4,9 @@
 #include "matrix.hpp"
 
 #include <vector>
+#include <iostream> //TODO remove later
 
+#include "../../mpihandler.hpp"
 #include "../../helplib/include/helplib.hpp"
 
 namespace hptypes
@@ -63,6 +65,7 @@ private:
     bool _uniquemapping; // indicator whether there is max one _data entry per matrix entry or not
     size_t _numrows_global, _numcols_global;
     size_t _numrows_local, _numcols_local;
+    size_t _firstrownumber;
     std::vector<double> _data;
     std::vector<size_t> _row;
     std::vector<size_t> _col;

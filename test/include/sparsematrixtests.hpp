@@ -3,6 +3,7 @@
 
 #include <stdexcept>
 #include <vector>
+#include <mpi.h>
 
 #include "../../src/helplib/include/helplib.hpp"
 
@@ -91,6 +92,7 @@ void sparsetest_basics(mattype* mata, mattype* matb, mattype* matc, size_t num_t
 
         // inf norm
         //TODO
+ 
         delete mata;
         delete matb;
         delete matc;

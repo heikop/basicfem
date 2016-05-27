@@ -10,7 +10,7 @@ Vector::Vector(const Vector& other):
     for (size_t i{0}; i < _size_local; ++i)
         _data[i] = other._data[i];
     //TODO error handling allocating
-}
+}//Vector::Vector(const Vector& other)
 
 Vector::Vector(Vector&& other):
     _size_global{other._size_global}, _size_local{other._size_local},
@@ -19,7 +19,7 @@ Vector::Vector(Vector&& other):
     other._size_global = 0;
     other._size_local = 0;
     other._data = nullptr;
-}
+}//Vector::Vector(Vector&& other)
 
 Vector::Vector(size_t size):
     _size_global{size}, _size_local{size},
@@ -28,7 +28,7 @@ Vector::Vector(size_t size):
     for (size_t i{0}; i < _size_local; ++i)
         _data[i] = 0;
     //TODO error handling allocating
-}
+}//Vector::Vector(size_t size)
 
 Vector& Vector::operator=(const Vector& other)
 {
@@ -41,7 +41,7 @@ Vector& Vector::operator=(const Vector& other)
         _data[i] = other._data[i];
     return *this;
     //TODO error handling allocating
-}
+}//Vector& Vector::operator=(const Vector& other)
 
 Vector& Vector::operator=(Vector&& other)
 {
@@ -54,7 +54,7 @@ Vector& Vector::operator=(Vector&& other)
     other._size_local = 0;
     other._data = nullptr;
     return *this;
-}
+}//Vector& Vector::operator=(Vector&& other)
 
 Vector Vector::operator-() const
 {
@@ -62,7 +62,7 @@ Vector Vector::operator-() const
     for (size_t i{0}; i < _size_local; ++i)
         res._data[i] = - _data[i];
     return res;
-}
+}//Vector Vector::operator-() const
 
 Vector& Vector::operator+(const Vector& other)
 {
@@ -70,7 +70,7 @@ Vector& Vector::operator+(const Vector& other)
     Vector* res = new Vector(*this);
     *res += other;
     return *res;
-}
+}//Vector& Vector::operator+(const Vector& other)
 
 Vector& Vector::operator+=(const Vector& other)
 {
@@ -78,7 +78,7 @@ Vector& Vector::operator+=(const Vector& other)
     for (size_t i{0}; i < _size_local; i++)
         _data[i] += other._data[i];
     return *this;
-}
+}//Vector& Vector::operator+=(const Vector& other)
 
 Vector& Vector::operator-(const Vector& other)
 {
@@ -86,7 +86,7 @@ Vector& Vector::operator-(const Vector& other)
     Vector* res = new Vector(*this);
     *res -= other;
     return *res;
-}
+}//Vector& Vector::operator-(const Vector& other)
 
 Vector& Vector::operator-=(const Vector& other)
 {
@@ -94,19 +94,19 @@ Vector& Vector::operator-=(const Vector& other)
     for (size_t i{0}; i < _size_local; i++)
         _data[i] -= other._data[i];
     return *this;
-}
+}//Vector& Vector::operator-=(const Vector& other)
 
 void Vector::print_local()
 {
     for (size_t i{0}; i < _size_local; ++i)
         std::cout << _data[i] << std::endl;
-}
+}//void Vector::print_local()
 
 void Vector::set_local(size_t i, double val)
 {
     assert(i < _size_local);
     _data[i] = val;
-}
+}//void Vector::set_local(size_t i, double val)
 
 double Vector::l2norm()
 {
@@ -114,13 +114,13 @@ double Vector::l2norm()
     for (size_t i{0}; i < _size_local; ++i)
         res += _data[i] * _data[i];
     return std::sqrt(res);
-}
+}//double Vector::l2norm()
 
 double Vector::lpnorm(int p)
 {
     //TODO maybe later
     return lpnorm(static_cast<double>(p));
-}
+}//double Vector::lpnorm(int p)
 
 double Vector::lpnorm(double p)
 {
@@ -128,7 +128,7 @@ double Vector::lpnorm(double p)
     for (size_t i{0}; i < _size_local; ++i)
         res += std::pow(std::abs(_data[i]), p);
     return std::pow(res, static_cast<double>(1)/p);
-}
+}//double Vector::lpnorm(double p)
 
 double Vector::maxnorm()
 {
@@ -143,6 +143,6 @@ double Vector::maxnorm()
         if (std::abs(*ptr) > res)
             res = *ptr;
     return res;
-}
+}//double Vector::maxnorm()
 
 }//namespace hptypes

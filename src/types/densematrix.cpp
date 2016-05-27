@@ -13,7 +13,7 @@ DenseMatrix::DenseMatrix(const DenseMatrix& other):
     for (size_t i{0}; i < _numrows_local*_numcols_local; ++i)
         _data[i] = other._data[i];
     //TODO error handling allocating
-}
+}//DenseMatrix::DenseMatrix(const DenseMatrix& other)
 
 DenseMatrix::DenseMatrix(DenseMatrix&& other):
     _numrows_global{other._numrows_global}, _numcols_global{other._numcols_global},
@@ -26,7 +26,7 @@ DenseMatrix::DenseMatrix(DenseMatrix&& other):
     other._numcols_local = 0;
     other._rowptrs = nullptr;
     other._data = nullptr;
-}
+}//DenseMatrix::DenseMatrix(DenseMatrix&& other)
 
 DenseMatrix::DenseMatrix(size_t numrows, size_t numcols):
     _numrows_global{numrows}, _numcols_global{numcols},
@@ -38,7 +38,7 @@ DenseMatrix::DenseMatrix(size_t numrows, size_t numcols):
     for (size_t i{0}; i < _numrows_local*_numcols_local; ++i)
         _data[i] = 0.0;
     //TODO error handling allocating
-}
+}//DenseMatrix::DenseMatrix(size_t numrows, size_t numcols)
 
 DenseMatrix& DenseMatrix::operator= (const DenseMatrix& other)
 {
@@ -57,7 +57,7 @@ DenseMatrix& DenseMatrix::operator= (const DenseMatrix& other)
         _data[i] = other._data[i];
     return *this;
     //TODO error handling allocating
-}
+}//DenseMatrix& DenseMatrix::operator= (const DenseMatrix& other)
 
 DenseMatrix& DenseMatrix::operator= (DenseMatrix&& other)
 {
@@ -78,7 +78,7 @@ DenseMatrix& DenseMatrix::operator= (DenseMatrix&& other)
     other._numcols_local = 0;
     return *this;
     //TODO error handling allocating
-}
+}//DenseMatrix& DenseMatrix::operator= (DenseMatrix&& other)
 
 void DenseMatrix::print_local() const
 {
@@ -88,7 +88,7 @@ void DenseMatrix::print_local() const
             std::cout << _rowptrs[i][j] << " ";
         std::cout << std::endl;
     }
-}
+}//void DenseMatrix::print_local() const
 
 bool DenseMatrix::issymmetric() const
 {
@@ -98,7 +98,7 @@ bool DenseMatrix::issymmetric() const
             if (_data[i*_numcols_local + j] != _data[j*_numcols_local + i])
                 return false;
     return true;
-}
+}//bool DenseMatrix::issymmetric() const
 
 double DenseMatrix::norm_1() const
 {
@@ -111,7 +111,7 @@ double DenseMatrix::norm_1() const
         if (tmp > res) res = tmp;
     }
     return res;
-}
+}//double DenseMatrix::norm_1() const
 
 double DenseMatrix::norm_2() const
 {
@@ -119,7 +119,7 @@ double DenseMatrix::norm_2() const
     for (double* data{_data}, * upto{_data + _numrows_local*_numcols_local}; data < upto; ++data)
         res += (*data) * (*data);
     return res;
-}
+}//double DenseMatrix::norm_2() const
 
 double DenseMatrix::norm_inf() const
 {
@@ -132,7 +132,7 @@ double DenseMatrix::norm_inf() const
         if (tmp > res) res = tmp;
     }
     return res;
-}
+}//double DenseMatrix::norm_inf() const
 
 DenseMatrix& DenseMatrix::get_transpose() const
 {
@@ -146,7 +146,7 @@ DenseMatrix& DenseMatrix::get_transpose() const
         ++colnum;
     }
     return *transposed;
-}
+}//DenseMatrix& DenseMatrix::get_transpose() const
 
 void DenseMatrix::transpose()
 {
@@ -163,7 +163,7 @@ void DenseMatrix::transpose()
 
     //*this = std::move(get_transpose()); //TODO TOTHINK what is better?
     *this = get_transpose();
-}
+}//void DenseMatrix::transpose()
 
 DenseMatrix& DenseMatrix::get_mat_add(DenseMatrix& other) const
 {
@@ -173,12 +173,12 @@ DenseMatrix& DenseMatrix::get_mat_add(DenseMatrix& other) const
                                                                         data < upto; ++data, ++otherdata)
         *data += *otherdata;
     return *res;
-}
+}//DenseMatrix& DenseMatrix::get_mat_add(DenseMatrix& other) const
 
 void DenseMatrix::mat_add(DenseMatrix& other)
 {
     *this = get_mat_add(other);
-}
+}//void DenseMatrix::mat_add(DenseMatrix& other)
 
 DenseMatrix& DenseMatrix::get_mat_sub(DenseMatrix& other) const
 {
@@ -188,29 +188,29 @@ DenseMatrix& DenseMatrix::get_mat_sub(DenseMatrix& other) const
                                                                         data < upto; ++data, ++otherdata)
         *data -= *otherdata;
     return *res;
-}
+}//DenseMatrix& DenseMatrix::get_mat_sub(DenseMatrix& other) const
 
 void DenseMatrix::mat_sub(DenseMatrix& other)
 {
     *this = get_mat_sub(other);
-}
+}//void DenseMatrix::mat_sub(DenseMatrix& other)
 
 DenseMatrix& DenseMatrix::get_scal_mul(double scalar) const
 {
     DenseMatrix* res = new DenseMatrix(*this);
     res->scal_mul(scalar);
     return *res;
-}
+}//DenseMatrix& DenseMatrix::get_scal_mul(double scalar) const
 
 void DenseMatrix::scal_mul(double scalar)
 {
     for (double* data{_data}, * upto{_data + _numrows_local*_numcols_local}; data < upto; ++data)
         *data *= scalar;
-}
+}//void DenseMatrix::scal_mul(double scalar)
 
 //void DenseMatrix::pow(unsigned int exp)
 //{
-//}
+//}void DenseMatrix::pow(unsigned int exp)
 
 DenseMatrix& DenseMatrix::get_mat_mul(DenseMatrix& other) const
 {
@@ -235,13 +235,13 @@ DenseMatrix& DenseMatrix::get_mat_mul(DenseMatrix& other) const
         }
     }
     return *res;
-}
+}//DenseMatrix& DenseMatrix::get_mat_mul(DenseMatrix& other) const
 
 void DenseMatrix::mat_mul(DenseMatrix& other)
 {
 //    if (&other == this) { pow(2); return; }
     *this = get_mat_mul(other);
-}
+}//void DenseMatrix::mat_mul(DenseMatrix& other)
 
 DenseMatrix& DenseMatrix::get_inverse() const
 {
@@ -261,12 +261,12 @@ DenseMatrix& DenseMatrix::get_inverse() const
         std::cout << "after " << i << "iterations: " << std::abs((this->get_mat_mul(*inverse)).get_mat_sub(idmat).norm_2()) << std::endl;
     }
     return *inverse;
-}
+}//DenseMatrix& DenseMatrix::get_inverse() const
 
 void DenseMatrix::invert()
 {
     //*this = std::move(get_inverse()); //TODO TOTHINK what is better?
     *this = get_inverse();
-}
+}//void DenseMatrix::invert()
 
 }//namespace hptypes

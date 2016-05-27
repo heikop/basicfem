@@ -21,6 +21,6 @@ FOREACH(testpath ${TESTS})
     string(REGEX REPLACE "([^ ]*)/test/" "" filename ${testpath})
     string(REPLACE ".cpp" "" testname ${filename})
     add_executable(${testname} ${filename})
-    TARGET_LINK_LIBRARIES(${testname} TYPELIB HELPLIB)
+    TARGET_LINK_LIBRARIES(${testname} TYPELIB HELPLIB ${MPI_LIBRARIES})
     add_test(${testname} ${testname}) # for ctest
 ENDFOREACH(testpath)

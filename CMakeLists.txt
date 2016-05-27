@@ -16,8 +16,10 @@ include(CTest) # this includes enable_testing() as well
 ###                                            ###
 ##################################################
 
-# TODO (later)
-#find_package (
+# TODO add doxygen(?) and OpenCL or CUDA(?)
+find_package (MPI REQUIRED)
+
+include_directories (/opt/openmpi/include)
 
 
 ##################################################

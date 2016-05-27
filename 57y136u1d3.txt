@@ -1,4 +1,17 @@
-Just some style rules I want to remember :)
+Just some (style) rules I want to remember :)
+
+REQUIREMENTS
+- C++11 is the (main) programming language...
+- ... including MPI with Open MPI as API.
+- cmake is used to build the makefile.
+- ctest for running the tests.
+- Documentation with ??? (probably doxygen) is planned.
+- GPU code will be ??? (maybe CUDA because I know it a bit, but I do not like to exclude several architectures).
+
+WHEN TO PUSH
+- Push only compiling code.
+- Premature code is OK (mine will always be...) as long as it is commented with 'TODO'(or something else, see below) and some explanations.
+- Comment with 'TODO', 'TODISCUSS', 'TOCHECK', 'ISSUE #157' to make it easy to find those lines of code.
 
 FILENAMES
 - Do not use crappy/ misleading/ meaningless file and directory names. (Except this one ;) )
@@ -24,8 +37,3 @@ CODESTYLE
 - Curly brackets which surround a code block always are written in seperate lines.
 - The Code between them(curly brackets which surround a code block) is always indented. The only exception is code between namespace brackets which is not to indent. This exception is mandatory.
 - If a curly bracket is the end of a long code block it is desirable to comment the line of code before the related opening bracket or some words which summarize this line. (example: '}//loop over rows of matrix'). This is mandatory at the end of namespaces and conditional inclusions of preprocessor directives (example: '#ifndef blabla ... #endif//ifndef blabla')
-
-WHEN TO PUSH
-- Push only compiling code.
-- Premature code is OK (mine will always be...) as long as it is commented with 'TODO'(or something else, see below) and some explanations.
-- Comment with 'TODO', 'TODISCUSS', 'TOCHECK', 'ISSUE #157' to make it easy to find those lines of code.

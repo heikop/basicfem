@@ -9,3 +9,7 @@ add_subdirectory (types)
 #add_subdirectory (solver)
 #add_subdirectory (assembler)
 #add_subdirectory (dataprocessing)
+
+list (APPEND CMAKE_CXX_FLAGS "-std=c++11")
+file (GLOB MPISOURCES "*.cpp")
+add_library (MPILIB ${MPISOURCES})

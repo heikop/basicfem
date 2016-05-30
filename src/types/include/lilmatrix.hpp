@@ -28,13 +28,13 @@ public:
     size_t get_numcols_global() const { return _numcols_global; }
     size_t get_numcols_local() const { return _numcols_local; }
     bool isquadratic() const { return _numrows_global == _numcols_global; }
-    double get_global(size_t, size_t) const;
-    double get_local(size_t, size_t) const;
+    double get_global(const size_t, const size_t) const;
+    double get_local(const size_t, const size_t) const;
     //size_t get_datasize_local() const { throw hphelp::not_implemented(); }
     //void print_local() { throw hphelp::not_implemented(); }
 
-    void set_global(size_t, size_t, double);
-    void set_local(size_t, size_t, double);
+    void set_global(const size_t, const size_t, const double);
+    void set_local(const size_t, const size_t, const double);
 
     //bool issymmetric() const { throw hphelp::not_implemented(); }
 
@@ -48,8 +48,8 @@ public:
     //void mat_add(LilMatrix& other) { throw hphelp::not_implemented(); }
     //LilMatrix& get_mat_sub(LilMatrix& other) const { throw hphelp::not_implemented(); }
     //void mat_sub(LilMatrix& other) { throw hphelp::not_implemented(); }
-    LilMatrix& get_scal_mul(double scal) const;
-    void scal_mul(double scal);
+    LilMatrix& get_scal_mul(const double scal) const;
+    void scal_mul(const double scal);
 //    void pow(unsigned int exp);
     //LilMatrix& get_mat_mul(LilMatrix& other) const { throw hphelp::not_implemented(); }
     //void mat_mul(LilMatrix& other) { throw hphelp::not_implemented(); }

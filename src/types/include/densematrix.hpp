@@ -27,13 +27,13 @@ public:
     size_t get_numcols_global() const { return _numcols_global; }
     size_t get_numcols_local() const { return _numcols_local; }
     bool isquadratic() const { return _numrows_global == _numcols_global; }
-    double get_global(size_t row, size_t col) const { assert(row < _numrows_global && col < _numcols_global); throw hphelp::not_implemented(); }
-    double get_local(size_t row, size_t col) const { assert(row < _numrows_local && col < _numcols_local); return _rowptrs[row][col]; }
+    double get_global(const size_t row, const size_t col) const { assert(row < _numrows_global && col < _numcols_global); throw hphelp::not_implemented(); }
+    double get_local(const size_t row, const size_t col) const { assert(row < _numrows_local && col < _numcols_local); return _rowptrs[row][col]; }
     size_t get_datasize_local() const { return _numrows_local*_numcols_local*sizeof(double) + 4*sizeof(size_t)+ sizeof(double**) + sizeof(double*); }
     void print_local() const;
 
-    void set_global(size_t row, size_t col, double val) { throw hphelp::not_implemented(); }
-    void set_local(size_t row, size_t col, double val) { _rowptrs[row][col] = val; }
+    void set_global(const size_t row, const size_t col, const double val) { throw hphelp::not_implemented(); }
+    void set_local(const size_t row, const size_t col, const double val) { _rowptrs[row][col] = val; }
 
     bool issymmetric() const;
 
@@ -43,15 +43,15 @@ public:
 
     DenseMatrix& get_transpose() const;
     void transpose();
-    DenseMatrix& get_mat_add(DenseMatrix& other) const;
-    void mat_add(DenseMatrix& other);
-    DenseMatrix& get_mat_sub(DenseMatrix& other) const;
-    void mat_sub(DenseMatrix& other);
-    DenseMatrix& get_scal_mul(double scal) const;
-    void scal_mul(double scal);
+    DenseMatrix& get_mat_add(const DenseMatrix& other) const;
+    void mat_add(const DenseMatrix& other);
+    DenseMatrix& get_mat_sub(const DenseMatrix& other) const;
+    void mat_sub(const DenseMatrix& other);
+    DenseMatrix& get_scal_mul(const double scal) const;
+    void scal_mul(const double scal);
 //    void pow(unsigned int exp);
-    DenseMatrix& get_mat_mul(DenseMatrix& other) const;
-    void mat_mul(DenseMatrix& other);
+    DenseMatrix& get_mat_mul(const DenseMatrix& other) const;
+    void mat_mul(const DenseMatrix& other);
     DenseMatrix& get_inverse() const;
     void invert();
 

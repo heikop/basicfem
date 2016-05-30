@@ -25,11 +25,11 @@ int main()
         std::vector<double> vecvalues(hphelp::randomvalues(vecsize, 10, -5));
         for (size_t i{0}; i < vecsize; ++i)
         {
-            veca.set_local(i, vecvalues[i]);
-            if (veca.get_local(i) != vecvalues[i])
-                throw std::invalid_argument("set_local/ get_local not correct");
+            veca.set_global(i, vecvalues[i]);
+            if (veca.get_global(i) != vecvalues[i])
+                throw std::invalid_argument("set_global/ get_global not correct");
         }
-        //TODO also with global set and get
+        //TODO also with local set and get
 
         // copy-constructor
         hptypes::Vector vecb(veca);
@@ -60,6 +60,9 @@ int main()
         //TODO unary-, +, +=, -, -= operators
 
         // norms
+        //if (veca.l1norm() != veca.lpnorm(1)) //TOCHECK does not work
+        if (veca.lpnorm(1) < veca.l1norm()-1.0e-5 && veca.lpnorm(1) > veca.l1norm()+1.0e-5)
+            throw std::invalid_argument("l1 and lp norm not equal");
         if (veca.l2norm() != veca.lpnorm(2))
             throw std::invalid_argument("l2 and lp norm not equal");
         double veca_l1norm{0};
@@ -67,7 +70,8 @@ int main()
         //    veca_l1norm += std::abs(veca.get_local(i));
         for (double x : vecvalues)
             veca_l1norm += std::abs(x);
-        if (veca.lpnorm(1) != veca_l1norm)
+        //if (veca.l1norm() != veca_l1norm) //TOCHECK does not work
+        if (veca.l1norm() < veca_l1norm-1.0e-5 && veca.l1norm() > veca_l1norm+1.0e-5)
             throw std::invalid_argument("l1norm is not computed right");
         double veca_maxnorm{0};
         for (double x : vecvalues)

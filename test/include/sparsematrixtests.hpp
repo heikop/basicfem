@@ -6,6 +6,7 @@
 #include <mpi.h>
 
 #include "../../src/helplib/include/helplib.hpp"
+#include "../../src/mpihandler.hpp"
 
 template <typename mattype>
 void sparsetest_basics(mattype* mata, mattype* matb, mattype* matc, size_t num_tests=50)
@@ -22,7 +23,11 @@ void sparsetest_basics(mattype* mata, mattype* matb, mattype* matc, size_t num_t
             throw std::length_error("initialized with wrong row size");
         if (mata->get_numcols_global() != numcols)
             throw std::length_error("initialized with wrong col size");
-        //TODO check sum over all local sizes
+        size_t numrows_local{mata->get_numrows_local()};
+        size_t numrows_global{0};
+        MPICALL(MPI::COMM_WORLD.Allreduce(&numrows_local, &numrows_global, 1, MPI_UNSIGNED, MPI_SUM);) //TODISCUSS TOCHECK size_t = unsigned int? (really always?)
+        if (mata->get_numrows_global() != numrows_global)
+            throw std::length_error("initialized with wrong local row sizes");
         for (size_t i{0}; i < mata->get_numrows_local(); ++i)
             for (size_t j{0}; j < mata->get_numcols_local(); ++j)
                 if (mata->get_local(i, j) != 0.0)

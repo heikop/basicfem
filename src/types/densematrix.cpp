@@ -165,7 +165,7 @@ void DenseMatrix::transpose()
     *this = get_transpose();
 }//void DenseMatrix::transpose()
 
-DenseMatrix& DenseMatrix::get_mat_add(DenseMatrix& other) const
+DenseMatrix& DenseMatrix::get_mat_add(const DenseMatrix& other) const
 {
     DenseMatrix* res = new DenseMatrix(*this);
     assert(_numrows_global == other._numrows_global && _numcols_global == other._numcols_global);
@@ -173,14 +173,14 @@ DenseMatrix& DenseMatrix::get_mat_add(DenseMatrix& other) const
                                                                         data < upto; ++data, ++otherdata)
         *data += *otherdata;
     return *res;
-}//DenseMatrix& DenseMatrix::get_mat_add(DenseMatrix& other) const
+}//DenseMatrix& DenseMatrix::get_mat_add(const DenseMatrix& other) const
 
-void DenseMatrix::mat_add(DenseMatrix& other)
+void DenseMatrix::mat_add(const DenseMatrix& other)
 {
     *this = get_mat_add(other);
-}//void DenseMatrix::mat_add(DenseMatrix& other)
+}//void DenseMatrix::mat_add(const DenseMatrix& other)
 
-DenseMatrix& DenseMatrix::get_mat_sub(DenseMatrix& other) const
+DenseMatrix& DenseMatrix::get_mat_sub(const DenseMatrix& other) const
 {
     DenseMatrix* res = new DenseMatrix(*this);
     assert(_numrows_global == other._numrows_global && _numcols_global == other._numcols_global);
@@ -188,31 +188,31 @@ DenseMatrix& DenseMatrix::get_mat_sub(DenseMatrix& other) const
                                                                         data < upto; ++data, ++otherdata)
         *data -= *otherdata;
     return *res;
-}//DenseMatrix& DenseMatrix::get_mat_sub(DenseMatrix& other) const
+}//DenseMatrix& DenseMatrix::get_mat_sub(const DenseMatrix& other) const
 
-void DenseMatrix::mat_sub(DenseMatrix& other)
+void DenseMatrix::mat_sub(const DenseMatrix& other)
 {
     *this = get_mat_sub(other);
-}//void DenseMatrix::mat_sub(DenseMatrix& other)
+}//void DenseMatrix::mat_sub(const DenseMatrix& other)
 
-DenseMatrix& DenseMatrix::get_scal_mul(double scalar) const
+DenseMatrix& DenseMatrix::get_scal_mul(const double scalar) const
 {
     DenseMatrix* res = new DenseMatrix(*this);
     res->scal_mul(scalar);
     return *res;
-}//DenseMatrix& DenseMatrix::get_scal_mul(double scalar) const
+}//DenseMatrix& DenseMatrix::get_scal_mul(const double scalar) const
 
-void DenseMatrix::scal_mul(double scalar)
+void DenseMatrix::scal_mul(const double scalar)
 {
     for (double* data{_data}, * upto{_data + _numrows_local*_numcols_local}; data < upto; ++data)
         *data *= scalar;
-}//void DenseMatrix::scal_mul(double scalar)
+}//void DenseMatrix::scal_mul(const double scalar)
 
-//void DenseMatrix::pow(unsigned int exp)
+//void DenseMatrix::pow(const unsigned int exp)
 //{
-//}void DenseMatrix::pow(unsigned int exp)
+//}void DenseMatrix::pow(const unsigned int exp)
 
-DenseMatrix& DenseMatrix::get_mat_mul(DenseMatrix& other) const
+DenseMatrix& DenseMatrix::get_mat_mul(const DenseMatrix& other) const
 {
     assert(_numcols_global == other._numrows_global);
     DenseMatrix* res = new DenseMatrix(_numrows_local, _numrows_local);
@@ -235,13 +235,13 @@ DenseMatrix& DenseMatrix::get_mat_mul(DenseMatrix& other) const
         }
     }
     return *res;
-}//DenseMatrix& DenseMatrix::get_mat_mul(DenseMatrix& other) const
+}//DenseMatrix& DenseMatrix::get_mat_mul(const DenseMatrix& other) const
 
-void DenseMatrix::mat_mul(DenseMatrix& other)
+void DenseMatrix::mat_mul(const DenseMatrix& other)
 {
 //    if (&other == this) { pow(2); return; }
     *this = get_mat_mul(other);
-}//void DenseMatrix::mat_mul(DenseMatrix& other)
+}//void DenseMatrix::mat_mul(const DenseMatrix& other)
 
 DenseMatrix& DenseMatrix::get_inverse() const
 {

@@ -30,11 +30,11 @@ public:
     virtual size_t get_numcols_global() const = 0;
     virtual size_t get_numcols_local() const = 0;
     virtual bool isquadratic() const = 0;
-    virtual datatype get_global(size_t, size_t) const = 0;
-    virtual datatype get_local(size_t, size_t) const = 0;
+    virtual datatype get_global(const size_t, const size_t) const = 0;
+    virtual datatype get_local(const size_t, const size_t) const = 0;
     // get_datasize_global() is not useful and is not to be implemented
     virtual size_t get_datasize_local() const { throw hphelp::not_implemented(); }
-    virtual void print_local() { throw hphelp::not_implemented(); }
+    virtual void print_local() const { throw hphelp::not_implemented(); }
 
     // blocking (deleting) some operators ?
     //bool operator/ (const Matrix&) = delete;
@@ -50,8 +50,8 @@ public:
     Matrix& operator[] (size_t) = delete;
     const Matrix& operator[] (size_t) const = delete;
 
-    virtual void set_global(size_t, size_t, datatype) = 0;
-    virtual void set_local(size_t, size_t, datatype) = 0;
+    virtual void set_global(const size_t, const size_t, datatype) = 0;
+    virtual void set_local(const size_t, const size_t, datatype) = 0;
 
     virtual bool issymmetric() const { throw hphelp::not_implemented(); }
 
@@ -61,17 +61,20 @@ public:
 
     virtual Matrix& get_transpose() const { throw hphelp::not_implemented(); }
     virtual void transpose() { throw hphelp::not_implemented(); }
-    virtual Matrix& get_mat_add(Matrix& other) const { throw hphelp::not_implemented(); }
-    virtual void mat_add(Matrix& other) { throw hphelp::not_implemented(); }
-    virtual Matrix& get_mat_sub(Matrix& other) const { throw hphelp::not_implemented(); }
-    virtual void mat_sub(Matrix& other) { throw hphelp::not_implemented(); }
-    virtual Matrix& get_scal_mul(double scal) const = 0;
-    virtual void scal_mul(double scal) = 0;
+    virtual Matrix& get_mat_add(const Matrix& other) const { throw hphelp::not_implemented(); }
+    virtual void mat_add(const Matrix& other) { throw hphelp::not_implemented(); }
+    virtual Matrix& get_mat_sub(const Matrix& other) const { throw hphelp::not_implemented(); }
+    virtual void mat_sub(const Matrix& other) { throw hphelp::not_implemented(); }
+    virtual Matrix& get_scal_mul(const double scal) const = 0;
+    virtual void scal_mul(const double scal) = 0;
 //    virtual void pow(unsigned int exp);
-    virtual Matrix& get_mat_mul(Matrix& other) const { throw hphelp::not_implemented(); }
-    virtual void mat_mul(Matrix& other) { throw hphelp::not_implemented(); }
+    virtual Matrix& get_mat_mul(const Matrix& other) const { throw hphelp::not_implemented(); }
+    virtual void mat_mul(const Matrix& other) { throw hphelp::not_implemented(); }
     virtual Matrix& get_inverse() const { throw hphelp::not_implemented(); }
     virtual void invert() { throw hphelp::not_implemented(); }
+
+    virtual Vector& vec_mul(const Vector& vec) const { throw hphelp::not_implemented(); } //TODO later this should be "= 0"
+    virtual Vector& pre_vec_mul(const Vector& vec) const { throw hphelp::not_implemented(); } //TODO maybe change later to "= 0"
 };//class Matrix
 
 }//namespace hptypes

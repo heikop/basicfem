@@ -3,11 +3,12 @@
 
 #include <cstddef>
 #include <cassert>
-#include <iostream>
+#include <iostream> //TODO remove later
 
+#include "../../mpihandler.hpp"
 #include "../../helplib/include/helplib.hpp"
 
-#include "matrix.hpp"
+//#include "matrix.hpp"
 
 namespace hptypes
 {
@@ -18,7 +19,7 @@ public:
     Vector() = delete;
     Vector(const Vector& other);
     Vector(Vector&& other);
-    Vector(size_t size);
+    Vector(const size_t size);
     ~Vector() { if (_data) delete[] _data; }
 
     Vector& operator=(const Vector& other);
@@ -52,23 +53,27 @@ public:
 
     size_t get_size_global() const { return _size_global; }
     size_t get_size_local() const { return _size_local; }
-    double get_global(size_t i) const { assert(i < _size_global); throw hphelp::not_implemented(); }
-    double get_local(size_t i) const { assert(i < _size_local); return _data[i]; }
-    // get_datasize_global() is not useful and is not to be implemented
+    double get_global(const size_t i) const;
+    double get_local(const size_t i) const;
     size_t get_datasize_local() const { return _size_local*sizeof(double) + 2*sizeof(size_t) + sizeof(double*); }
     void print_local();
+    size_t get_firstentrynumber() const;
 
-    void set_global(size_t, double) { throw hphelp::not_implemented(); }
-    void set_local(size_t, double);
+    void set_global(const size_t, const double);
+    void set_local(const size_t, const double);
+    void add_global(const size_t, const double);
+    void add_local(const size_t, const double);
 
-    double l2norm();
-    double lpnorm(int p);
-    double lpnorm(double p);
-    double maxnorm();
+    double l1norm() const;
+    double l2norm() const;
+    double lpnorm(const int p) const;
+    double lpnorm(const double p) const;
+    double maxnorm() const;
 
 private:
     size_t _size_global;
     size_t _size_local;
+    size_t _firstentrynumber;
     double* _data;
 };//class vector
 

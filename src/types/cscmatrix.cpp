@@ -6,7 +6,7 @@ namespace hptypes
 CscMatrix::CscMatrix(const CscMatrix& other):
     _numrows_global{other._numrows_global}, _numcols_global{other._numcols_global},
     _numrows_local{other._numrows_local}, _numcols_local{other._numcols_local},
-    _firstrownumber{other._firstrownumber}
+    _firstrownum_globalcount{other._firstrownum_globalcount}
 {
     _data = other._data;
     _rowindex = other._rowindex;
@@ -16,7 +16,7 @@ CscMatrix::CscMatrix(const CscMatrix& other):
 CscMatrix::CscMatrix(CscMatrix&& other):
     _numrows_global{other._numrows_global}, _numcols_global{other._numcols_global},
     _numrows_local{other._numrows_local}, _numcols_local{other._numcols_local},
-    _firstrownumber{other._firstrownumber},
+    _firstrownum_globalcount{other._firstrownum_globalcount},
     _data{std::move(other._data)},
     _rowindex{std::move(other._rowindex)},
     _firstcolentry{std::move(other._firstcolentry)}
@@ -25,7 +25,7 @@ CscMatrix::CscMatrix(CscMatrix&& other):
     other._numcols_global = 0;
     other._numrows_local = 0;
     other._numcols_local = 0;
-    other._firstrownumber = 0;
+    other._firstrownum_globalcount = 0;
 }//CscMatrix::CscMatrix(CscMatrix&& other)
 
 CscMatrix::CscMatrix(const size_t numrows, const size_t numcols):
@@ -39,10 +39,10 @@ CscMatrix::CscMatrix(const size_t numrows, const size_t numcols):
     if (_numrows_global % __mpi_instance__.get_global_size() > __mpi_instance__.get_global_rank())
     {
         ++_numrows_local;
-        _firstrownumber = _numrows_local * __mpi_instance__.get_global_rank();
+        _firstrownum_globalcount = _numrows_local * __mpi_instance__.get_global_rank();
     }
     else
-        _firstrownumber = _numrows_local * __mpi_instance__.get_global_rank() + _numrows_global % __mpi_instance__.get_global_size();
+        _firstrownum_globalcount = _numrows_local * __mpi_instance__.get_global_rank() + _numrows_global % __mpi_instance__.get_global_size();
 }//CscMatrix::CscMatrix(const size_t numrows, const size_t numcols)
 
 CscMatrix::~CscMatrix()
@@ -56,7 +56,7 @@ CscMatrix& CscMatrix::operator=(const CscMatrix& other)
     _numcols_global = other._numcols_global;
     _numrows_local = other._numrows_local;
     _numcols_local = other._numcols_local;
-    _firstrownumber = other._firstrownumber;
+    _firstrownum_globalcount = other._firstrownum_globalcount;
     _data = other._data;
     _rowindex = other._rowindex;
     _firstcolentry = other._firstcolentry;
@@ -69,7 +69,7 @@ CscMatrix& CscMatrix::operator=(CscMatrix&& other)
     _numcols_global = other._numcols_global;
     _numrows_local = other._numrows_local;
     _numcols_local = other._numcols_local;
-    _firstrownumber = other._firstrownumber;
+    _firstrownum_globalcount = other._firstrownum_globalcount;
     _data = std::move(other._data);
     _rowindex = std::move(other._rowindex);
     _firstcolentry = std::move(other._firstcolentry);
@@ -77,7 +77,7 @@ CscMatrix& CscMatrix::operator=(CscMatrix&& other)
     other._numcols_global = 0;
     other._numrows_local = 0;
     other._numcols_local = 0;
-    other._firstrownumber = 0;
+    other._firstrownum_globalcount = 0;
 }//CscMatrix& CscMatrix::operator=(CscMatrix&& other)
 
 bool CscMatrix::operator==(const CscMatrix& other)
@@ -107,8 +107,8 @@ double CscMatrix::get_global(const size_t row, const size_t col) const
 {
     assert(row < _numrows_global && col < _numcols_global);
     double val{0.0};
-    if (row >= _firstrownumber && row < _firstrownumber + _numrows_local)
-        val = get_local(row - _firstrownumber, col);
+    if (row >= _firstrownum_globalcount && row < _firstrownum_globalcount + _numrows_local)
+        val = get_local(row - _firstrownum_globalcount, col);
     double val_global{0.0};
     //MPICALL(MPI::COMM_WORLD.Barrier();)
     MPICALL(MPI::COMM_WORLD.Allreduce(&val, &val_global, 1, MPI_DOUBLE, MPI_SUM);) //TODO should work with copying and not adding it up!
@@ -132,8 +132,8 @@ double CscMatrix::get_local(const size_t row, const size_t col) const
 void CscMatrix::set_global(const size_t row, const size_t col, const double val)
 {
     assert(row < _numrows_global && col < _numcols_global);
-    if (row >= _firstrownumber && row < _firstrownumber + _numrows_local)
-        set_local(row - _firstrownumber, col, val);
+    if (row >= _firstrownum_globalcount && row < _firstrownum_globalcount + _numrows_local)
+        set_local(row - _firstrownum_globalcount, col, val);
     MPICALL(MPI::COMM_WORLD.Barrier();) //TODISCUSS necessary?
 }//void CscMatrix::set_global(const size_t row, const size_t col, const double val)
 
@@ -214,24 +214,24 @@ void CscMatrix::scal_mul(const double scal)
             val *= scal;
 }//void CscMatrix::scal_mul(const double scal)
 
-Vector& CscMatrix::vec_mul(const Vector& vec) const
+DenseVector& CscMatrix::get_vec_mul(const DenseVector& vec) const
 {
     assert(vec.get_size_global() == _numcols_global);
-    Vector* res = new Vector(_numrows_global);
+    DenseVector* res = new DenseVector(_numrows_global);
     for (size_t j{0}; j < _numcols_local; ++j)
         for (size_t i{_firstcolentry[j]}; i < _firstcolentry[j+1]; ++i)
             res->add_local(_rowindex[i], _data[i] * vec.get_local(j));
     return *res;
-}//Vector& CscMatrix::vec_mul(const Vector& vec) const
+}//DenseVector& CscMatrix::get_vec_mul(const DenseVector& vec) const
 
-Vector& CscMatrix::pre_vec_mul(const Vector& vec) const
+DenseVector& CscMatrix::get_pre_vec_mul(const DenseVector& vec) const
 {
     assert(vec.get_size_global() == _numrows_global);
-    Vector* res = new Vector(_numcols_global);
+    DenseVector* res = new DenseVector(_numcols_global);
     for (size_t j{0}; j < _numcols_local; ++j)
         for (size_t i{_firstcolentry[j]}; i < _firstcolentry[j+1]; ++i)
             res->add_local(j, vec.get_local(_rowindex[i]) * _data[i]);
     return *res;
-}//Vector& CscMatrix::pre_vec_mul(const Vector& vec) const
+}//DenseVector& CscMatrix::get_pre_vec_mul(const DenseVector& vec) const
 
 }//namespace hptypes

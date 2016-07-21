@@ -1,4 +1,4 @@
-#include "../src/types/include/vector.hpp"
+#include "../src/types/include/densevector.hpp"
 
 #include <stdexcept>
 #include <vector>
@@ -13,7 +13,7 @@ int main()
     {
         // 0-initialization
         size_t vecsize{hphelp::randomsize(10e2, 10e3)};
-        hptypes::Vector veca(vecsize);
+        hptypes::DenseVector veca(vecsize);
         if (veca.get_size_global() != vecsize)
             throw std::length_error("initialized with wrong size");
         //TODO check sum over all local lengths
@@ -32,7 +32,7 @@ int main()
         //TODO also with local set and get
 
         // copy-constructor
-        hptypes::Vector vecb(veca);
+        hptypes::DenseVector vecb(veca);
         if (vecb.get_size_global() != veca.get_size_global())
             throw std::length_error("copy-constructor: wrong global size");
         if (vecb.get_size_local() != veca.get_size_local())
@@ -42,7 +42,7 @@ int main()
                 throw std::invalid_argument("copy-constructor: value wrong assigned");
 
         // assignment-operator
-        hptypes::Vector vecc(0);
+        hptypes::DenseVector vecc(0);
         vecc = veca;
         if (vecc.get_size_global() != veca.get_size_global())
             throw std::length_error("assignment-operator: wrong global size");

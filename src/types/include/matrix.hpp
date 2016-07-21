@@ -6,7 +6,9 @@
 
 #include "../../helplib/include/helplib.hpp"
 
-#include "vector.hpp"
+//#include "vector.hpp"
+#include "densevector.hpp"
+//#include "sparsevector.hpp"
 
 namespace hptypes
 {
@@ -73,8 +75,8 @@ public:
     virtual Matrix& get_inverse() const { throw hphelp::not_implemented(); }
     virtual void invert() { throw hphelp::not_implemented(); }
 
-    virtual Vector& vec_mul(const Vector& vec) const { throw hphelp::not_implemented(); } //TODO later this should be "= 0"
-    virtual Vector& pre_vec_mul(const Vector& vec) const { throw hphelp::not_implemented(); } //TODO maybe change later to "= 0"
+    virtual DenseVector& get_vec_mul(const DenseVector& vec) const { throw hphelp::not_implemented(); } //TODO later this should be "= 0"
+    virtual DenseVector& get_pre_vec_mul(const DenseVector& vec) const { throw hphelp::not_implemented(); } //TODO maybe change later to "= 0"
 };//class Matrix
 
 }//namespace hptypes

@@ -67,13 +67,13 @@ public:
     //CscMatrix& get_inverse() const { throw hphelp::not_implemented(); }
     //void invert() { throw hphelp::not_implemented(); }
 
-    Vector& vec_mul(const Vector& vec) const;
-    Vector& pre_vec_mul(const Vector& vec) const;
+    DenseVector& get_vec_mul(const DenseVector& vec) const;
+    DenseVector& get_pre_vec_mul(const DenseVector& vec) const;
 
 private:
     size_t _numrows_global, _numcols_global;
     size_t _numrows_local, _numcols_local;
-    size_t _firstrownumber;
+    size_t _firstrownum_globalcount;
     std::vector<double> _data;
     std::vector<size_t> _rowindex;
     std::vector<size_t> _firstcolentry;

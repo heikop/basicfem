@@ -27,13 +27,13 @@ public:
     size_t get_numcols_global() const { return _numcols_global; }
     size_t get_numcols_local() const { return _numcols_local; }
     bool isquadratic() const { return _numrows_global == _numcols_global; }
-    double get_global(const size_t row, const size_t col) const { assert(row < _numrows_global && col < _numcols_global); throw hphelp::not_implemented(); }
+    double get_global(const size_t row, const size_t col) const;
     double get_local(const size_t row, const size_t col) const { assert(row < _numrows_local && col < _numcols_local); return _rowptrs[row][col]; }
     size_t get_datasize_local() const { return _numrows_local*_numcols_local*sizeof(double) + 4*sizeof(size_t)+ sizeof(double**) + sizeof(double*); }
     void print_local() const;
 
-    void set_global(const size_t row, const size_t col, const double val) { throw hphelp::not_implemented(); }
-    void set_local(const size_t row, const size_t col, const double val) { _rowptrs[row][col] = val; }
+    void set_global(const size_t row, const size_t col, const double val);
+    void set_local(const size_t row, const size_t col, const double val) { assert(row < _numrows_local && col < _numcols_local); _rowptrs[row][col] = val; }
 
     bool issymmetric() const;
 
@@ -58,6 +58,7 @@ public:
 private:
     size_t _numrows_global, _numcols_global;
     size_t _numrows_local, _numcols_local;
+    size_t _firstrownumber;
     double** _rowptrs;
     double* _data;
 };//class DenseMatrix

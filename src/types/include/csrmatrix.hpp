@@ -2,26 +2,37 @@
 #define __CSRMATRIX_HPP_
 
 #include "matrix.hpp"
+
+#include <vector>
+#include <iostream> //TODO remove later
+
+#include "../../mpihandler.hpp"
 #include "../../helplib/include/helplib.hpp"
 
 namespace hptypes
 {
 
+// this matrix has always unique entries (one data per matrixentry)
+// and it is always sorted (rows and columns)
 class CsrMatrix : public Matrix<double>
 {
 public:
     CsrMatrix() = delete;
     CsrMatrix(const CsrMatrix& other);
     CsrMatrix(CsrMatrix&& other);
-    CsrMatrix(size_t numrows, size_t numcols);
+    CsrMatrix(const size_t numrows, const size_t numcols);
     ~CsrMatrix();
 
-    CsrMatrix& operator= (const CsrMatrix&);
-    CsrMatrix& operator= (CsrMatrix&&);
+    CsrMatrix& operator=(const CsrMatrix&);
+    CsrMatrix& operator=(CsrMatrix&&);
     //CsrMatrix operator+ (const CsrMatrix&) { throw not_implemented(); }
     //CsrMatrix& operator+= (const CsrMatrix&) { throw not_implemented(); }
     //CsrMatrix operator- (const CsrMatrix&) { throw not_implemented(); }
     //CsrMatrix& operator-= (const CsrMatrix&) { throw not_implemented(); }
+    bool operator==(const CsrMatrix&);
+    bool operator!=(const CsrMatrix&);
+
+    void free_unused_space();
 
     size_t get_numrows_global() const { return _numrows_global; }
     size_t get_numrows_local() const { return _numrows_local; }
@@ -56,9 +67,16 @@ public:
     //CsrMatrix& get_inverse() const { throw hphelp::not_implemented(); }
     //void invert() { throw hphelp::not_implemented(); }
 
+    DenseVector& get_vec_mul(const DenseVector& vec) const;
+    DenseVector& get_pre_vec_mul(const DenseVector& vec) const;
+
 private:
     size_t _numrows_global, _numcols_global;
     size_t _numrows_local, _numcols_local;
+    size_t _firstrownum_globalcount;
+    std::vector<double> _data;
+    std::vector<size_t> _colindex;
+    std::vector<size_t> _firstrowentry;
 };//class CsrMatrix
 
 }//namespace hptypes

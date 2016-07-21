@@ -6,6 +6,7 @@ namespace hptypes
 DenseMatrix::DenseMatrix(const DenseMatrix& other):
     _numrows_global{other._numrows_global}, _numcols_global{other._numcols_global},
     _numrows_local{other._numrows_local}, _numcols_local{other._numcols_local},
+    _firstrownumber{other._firstrownumber},
     _rowptrs{new double*[_numrows_local]}, _data{new double[_numrows_local*_numcols_local]}
 {
     for (size_t i{0}; i < _numrows_local; ++i)
@@ -18,37 +19,49 @@ DenseMatrix::DenseMatrix(const DenseMatrix& other):
 DenseMatrix::DenseMatrix(DenseMatrix&& other):
     _numrows_global{other._numrows_global}, _numcols_global{other._numcols_global},
     _numrows_local{other._numrows_local}, _numcols_local{other._numcols_local},
+    _firstrownumber{other._firstrownumber},
     _rowptrs{other._rowptrs}, _data{other._data}
 {
     other._numrows_global = 0;
     other._numcols_global = 0;
     other._numrows_local = 0;
     other._numcols_local = 0;
+    other._firstrownumber = 0;
     other._rowptrs = nullptr;
     other._data = nullptr;
 }//DenseMatrix::DenseMatrix(DenseMatrix&& other)
 
-DenseMatrix::DenseMatrix(size_t numrows, size_t numcols):
+DenseMatrix::DenseMatrix(const size_t numrows, const size_t numcols):
     _numrows_global{numrows}, _numcols_global{numcols},
-    _numrows_local{numrows}, _numcols_local{numcols}, // TODO
-    _rowptrs{new double*[_numrows_local]}, _data{new double[_numrows_local*_numcols_local]}
+    _numrows_local{0}, _numcols_local{numcols}
 {
+    _numrows_local = _numrows_global / __mpi_instance__.get_global_size();
+    if (_numrows_global % __mpi_instance__.get_global_size() > __mpi_instance__.get_global_rank())
+    {
+        ++_numrows_local;
+        _firstrownumber = _numrows_local * __mpi_instance__.get_global_rank();
+    }
+    else
+        _firstrownumber = _numrows_local * __mpi_instance__.get_global_rank() + _numrows_global % __mpi_instance__.get_global_size();
+    _rowptrs = new double*[_numrows_local];
+    _data = new double[_numrows_local*_numcols_local];
+    //TODO error handling allocating
     for (size_t i{0}; i < _numrows_local; ++i)
         _rowptrs[i] = _data + i*_numcols_local;
     for (size_t i{0}; i < _numrows_local*_numcols_local; ++i)
         _data[i] = 0.0;
-    //TODO error handling allocating
-}//DenseMatrix::DenseMatrix(size_t numrows, size_t numcols)
+}//DenseMatrix::DenseMatrix(const size_t numrows, const size_t numcols)
 
 DenseMatrix& DenseMatrix::operator= (const DenseMatrix& other)
 {
     if (this == &other) return *this;
     if (_data) delete[] _data;
     if (_rowptrs) delete[] _rowptrs;
-    _numrows_global = other.get_numrows_global();
-    _numcols_global = other.get_numcols_global();
-    _numrows_local = other.get_numrows_local();
-    _numcols_local = other.get_numcols_local();
+    _numrows_global = other._numrows_global;
+    _numcols_global = other._numcols_global;
+    _numrows_local = other._numrows_local;
+    _numcols_local = other._numcols_local;
+    _firstrownumber = other._firstrownumber;
     _rowptrs = new double*[_numrows_local];
     _data = new double[_numrows_local*_numcols_local];
     for (size_t i{0}; i < _numrows_local; ++i)
@@ -64,10 +77,11 @@ DenseMatrix& DenseMatrix::operator= (DenseMatrix&& other)
     if (this == &other) return *this;
     if (_data) delete[] _data;
     if (_rowptrs) delete[] _rowptrs;
-    _numrows_global = other.get_numrows_global();
-    _numcols_global = other.get_numcols_global();
-    _numrows_local = other.get_numrows_local();
-    _numcols_local = other.get_numcols_local();
+    _numrows_global = other._numrows_global;
+    _numcols_global = other._numcols_global;
+    _numrows_local = other._numrows_local;
+    _numcols_local = other._numcols_local;
+    _firstrownumber = other._firstrownumber;
     _rowptrs = other._rowptrs;
     _data = other._data;
     other._rowptrs = nullptr;
@@ -76,9 +90,30 @@ DenseMatrix& DenseMatrix::operator= (DenseMatrix&& other)
     other._numcols_global = 0;
     other._numrows_local = 0;
     other._numcols_local = 0;
+    other._firstrownumber = 0;
     return *this;
     //TODO error handling allocating
 }//DenseMatrix& DenseMatrix::operator= (DenseMatrix&& other)
+
+double DenseMatrix::get_global(const size_t row, const size_t col) const
+{
+    assert(row < _numrows_global && col < _numcols_global);
+    double val{0.0};
+    if (row >= _firstrownumber && row < _firstrownumber + _numrows_local)
+        val = get_local(row - _firstrownumber, col);
+    double val_global{0.0};
+    MPICALL(MPI::COMM_WORLD.Allreduce(&val, &val_global, 1, MPI_DOUBLE, MPI_SUM);) //TODO should work with copying and not adding it up!
+    //MPICALL(MPI::COMM_WORLD.Bcast(&val, 1, MPI_DOUBLE, __mpi_instance__.get_global_rank());) // somehow like this, I think
+    return val_global;
+}//double DenseMatrix::get_global(const size_t row, const size_t col) const
+
+void DenseMatrix::set_global(const size_t row, const size_t col, const double val)
+{
+    assert(row < _numrows_global && col < _numcols_global);
+    if (row >= _firstrownumber && row < _firstrownumber + _numrows_local)
+        set_local(row - _firstrownumber, col, val);
+    MPICALL(MPI::COMM_WORLD.Barrier();) //TODISCUSS necessary?
+}//void DenseMatrix::set_global(const size_t row, const size_t col, const double val)
 
 void DenseMatrix::print_local() const
 {

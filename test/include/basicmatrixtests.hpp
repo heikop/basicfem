@@ -1,5 +1,5 @@
-#ifndef __SPARSEMATRIXTESTS_HPP_
-#define __SPARSEMATRIXTESTS_HPP_
+#ifndef __BASICMATRIXTESTS_HPP_
+#define __BASICMATRIXTESTS_HPP_
 
 #include <stdexcept>
 #include <vector>
@@ -9,7 +9,7 @@
 #include "../../src/mpihandler.hpp"
 
 template <typename mattype>
-void sparsetest_basics(mattype* mata, mattype* matb, mattype* matc, size_t num_tests=50)
+void basicmatrixtest(mattype* mata, mattype* matb, mattype* matc, size_t num_tests=50)
 {
     hphelp::activate_random();
     for (size_t num_checks{0}; num_checks < num_tests; ++num_checks)
@@ -17,7 +17,6 @@ void sparsetest_basics(mattype* mata, mattype* matb, mattype* matc, size_t num_t
         // 0-initialization
         const size_t numrows{hphelp::randomsize(10e1, 10e2)};
         const size_t numcols{hphelp::randomsize(10e1, 10e2)};
-        //hptypes::CooMatrix mata(numrows, numcols);
         mata = new mattype(numrows, numcols);
         if (mata->get_numrows_global() != numrows)
             throw std::length_error("initialized with wrong row size");
@@ -97,11 +96,11 @@ void sparsetest_basics(mattype* mata, mattype* matb, mattype* matc, size_t num_t
 
         // inf norm
         //TODO
- 
+
         delete mata;
         delete matb;
         delete matc;
     }
-}
+}//void basicmatrixtest(mattype* mata, mattype* matb, mattype* matc, size_t num_tests=50)
 
-#endif//ifndef __SPARSEMATRIXTESTS_HPP_
+#endif//ifndef __BASICMATRIXTESTS_HPP_

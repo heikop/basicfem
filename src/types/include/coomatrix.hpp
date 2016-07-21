@@ -68,8 +68,8 @@ public:
     //CooMatrix& get_inverse() const { throw hphelp::not_implemented(); }
     //void invert() { throw hphelp::not_implemented(); }
 
-    Vector& vec_mul(const Vector& vec) const;
-    Vector& pre_vec_mul(const Vector& vec) const;
+    DenseVector& get_vec_mul(const DenseVector& vec) const;
+    DenseVector& get_pre_vec_mul(const DenseVector& vec) const;
 
 private:
     bool _uniquemapping; // indicator whether there is max one _data entry per matrix entry or not

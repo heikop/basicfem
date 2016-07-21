@@ -359,30 +359,28 @@ void CooMatrix::scal_mul(const double scal)
             val *= scal;
 }//void CooMatrix::scal_mul(const double scal)
 
-Vector& CooMatrix::vec_mul(const Vector& vec) const
+DenseVector& CooMatrix::get_vec_mul(const DenseVector& vec) const
 {
     //TODISCUSS is it faster to copy the full vector to every node? (-> to avoid get_global)
     assert(_numcols_global == vec.get_size_global());
-    Vector* res = new Vector(vec.get_size_global());
-    assert(_numrows_local == res->get_size_local()); // this is redundant because all matrices and vectors are split in the same way
+    DenseVector* res = new DenseVector(vec.get_size_global());
     for (size_t i{0}; i < _data.size(); ++i)
         res->add_local(_row[i] - _firstrownumber, _data[i] * vec.get_global(_col[i]));
     return *res;
-}//Vector& CooMatrix::vec_mul(const Vector& vec) const
+}//DenseVector& CooMatrix::get_vec_mul(const DenseVector& vec) const
 
-Vector& CooMatrix::pre_vec_mul(const Vector& vec) const
+DenseVector& CooMatrix::get_pre_vec_mul(const DenseVector& vec) const
 {
     assert(_numrows_global == vec.get_size_global());
-    assert(_numrows_local == vec.get_size_local()); // this is redundant because all matrices and vectors are split in the same way
     std::vector<double> localres(_numcols_global, 0.0);
     for (size_t i{0}; i < _data.size(); ++i)
         localres[_col[i]] += vec.get_local(_row[i]) * _data[i];
     std::vector<double> globalres(_numcols_global);
     MPICALL(MPI::COMM_WORLD.Allreduce(localres.data(), globalres.data(), _numcols_global, MPI_DOUBLE, MPI_SUM);)
-    Vector* res = new Vector(vec.get_size_global()); //TODO use std::vector constructor for Vectcor (when available)
+    DenseVector* res = new DenseVector(vec.get_size_global()); //TODO use std::vector constructor for Vectcor (when available)
     for (size_t locind{0}, globind{res->get_firstentrynumber()}; locind < res->get_size_local(); ++locind, ++globind)
         res->set_local(locind, globalres[globind]);
     return *res;
-}//Vector& CooMatrix::pre_vec_mul(const Vector& vec) const
+}//DenseVector& CooMatrix::get_pre_vec_mul(const DenseVector& vec) const
 
 }//namespace hptypes
